@@ -12,6 +12,7 @@ public class Task {
     private Long id;
 
     private String titulo;
+    private String testeGit;
     private String descricao;
 
     @Enumerated(EnumType.STRING)
