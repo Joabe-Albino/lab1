@@ -31,4 +31,4 @@ jobs:
 
       # O comando real que nós digitávamos no terminal
       - name: Compilar e Testar com Maven
-        run: mvn clean package
+        run: mvn -f lab/lab/pom.xml clean package
