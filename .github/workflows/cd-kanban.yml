@@ -23,6 +23,7 @@ jobs:
       - name: Build e Push da imagem
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./lab/lab
+          file: ./lab/lab/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/kanban-api:${{ github.ref_name }}
