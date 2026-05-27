@@ -1,32 +1,14 @@
-FROM maven:3.9.6-eclipse-temurin-21-jammy
-
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /app
-
-# Copy pom.xml and download dependencies first (caching)
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy the rest of the source code
-COPY src ./src
-
-# Expose application and debug ports
-EXPOSE 8080 5005
-
-# Command to run the application in development mode with hot reload and debugging
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
-WORKDIR /app
-COPY pom.xml .
-# Download dependencies
-RUN mvn dependency:go-offline -B
-COPY src ./src
-# Build the application
+COPY . .
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine
+
+
+FROM eclipse-temurin:21-jre AS runtime
 WORKDIR /app
-# Copy the built jar
 COPY --from=builder /app/target/*.jar app.jar
+# copia o arquivo JAR gerado para a imagem final
+
 EXPOSE 8080
-# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
